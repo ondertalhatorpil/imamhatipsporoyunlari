@@ -1,5 +1,6 @@
 services:
   backend:
+    container_name: oncu_backend
     image: oncu-backend:prod
     build:
       context: ./server
@@ -27,6 +28,7 @@ services:
     restart: unless-stopped
 
   frontend:
+    container_name: oncu_frontend
     image: oncu-frontend:prod
     build:
       context: ./frontend
@@ -46,7 +48,7 @@ services:
     restart: unless-stopped
 
   db:
-    container_name: mysql
+    container_name: oncu_mysql
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     restart: always
