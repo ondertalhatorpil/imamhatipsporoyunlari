@@ -22,7 +22,7 @@ services:
     volumes:
       - ./server:/app
       - /app/node_modules
-        - ./server/uploads:/app/uploads
+      - ./server/uploads:/app/uploads
     networks:
       - oncu-network
     restart: unless-stopped
@@ -111,5 +111,6 @@ networks:
     name: oncu-network
 
 volumes:
+  backend:
   frontend:
   db:
