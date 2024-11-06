@@ -24,7 +24,7 @@ services:
       - /app/node_modules
       - ./server/uploads:/app/uploads
     networks:
-      - oncu-network
+      - oncu-wlan
     restart: unless-stopped
 
   frontend:
@@ -44,7 +44,7 @@ services:
     depends_on:
       - backend
     networks:
-      - oncu-network
+      - oncu-wlan
     restart: unless-stopped
 
   db:
@@ -74,7 +74,7 @@ services:
       # ports:
       #   - "3306:3306"
     networks:
-      - oncu-network
+      - oncu-wlan
     volumes:
       - ./db:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -91,7 +91,7 @@ services:
   #    depends_on:
   #      - db
   #  networks:
-  #    - oncu-network
+  #    - oncu-wlan
   #  restart: unless-stopped
 
   nginx:
@@ -105,10 +105,10 @@ services:
       - frontend
       - backend
     networks:
-      - oncu-network
+      - oncu-wlan
 networks:
-  oncu-network:
-    name: oncu-network
+  oncu-wlan:
+    name: oncu-wlan
 
 volumes:
   backend:
