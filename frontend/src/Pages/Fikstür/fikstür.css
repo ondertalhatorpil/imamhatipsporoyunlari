@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+.fikstür{
+    width: 100%;
+    height: 30rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fikstür h1{
+    font-family: "Mulish";
+    font-weight: 900;
+    font-style: italic;
+    background-color: #E84049;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: black;
+    font-size: 35px;
+    margin-top: 15%;
+}
+
+@media (max-width: 768px){
+    .fikstür{
+        width: 90%;
+        height: 11rem;
+        margin-left: 18px;
+        align-items: baseline;
+        margin-top: 50px;
+    }
+    .fikstür h1{
+        font-size: 15px;
+    }
+}

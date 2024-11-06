@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+.blog-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: #e8e8e8;
+    padding-top: 50px;
+    
+}
+.blog-insights {
+    display: flex;
+    justify-content: space-between;
+    padding: 50px;
+    width: 80%;
+    
+  }
+  
+  .blog-content {
+    flex: 1;
+    padding-right: 80px;
+  }
+  
+  .blog-tag {
+    color: #E84049;
+    font-size: 14px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+  
+  .blog-content h2 {
+    font-family: "Mulish";
+    font-weight: 900;
+    font-style: italic;
+    font-size: 36px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  
+  .blog-content p {
+    color: #7f8c8d;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    width: 80%;
+  }
+  
+  .view-all-btn {
+    background-color: #E84049;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .view-all-btn:hover {
+    background-color: #34495e;
+  }
+  
+  .blog-posts {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .blog-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .blog-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  .blog-card-content {
+    padding: 20px;
+  }
+  
+  .blog-card h3 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+  
+  .blog-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  
+  .read-more {
+    color: #E84049;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 1024px) {
+    .blog-insights {
+      flex-direction: column;
+    }
+  
+    .blog-content {
+      padding-right: 0;
+      margin-bottom: 30px;
+    }
+  
+    .blog-posts {
+      flex-direction: column;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .blog-insights {
+      padding: 30px;
+    }
+  
+    .blog-content h2 {
+      font-size: 28px;
+    }
+  }

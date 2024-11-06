@@ -1,0 +1,435 @@
+.form-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.form-banner {
+  position: relative;
+  width: 100%;
+  height: 12rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 90px;
+  border-radius: 150px 150px 0 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.form-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('./assets.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.04; 
+}
+
+.form-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #E84049; 
+  mix-blend-mode: multiply; 
+}
+
+.form-banner h4{
+  color: #ffffff;
+  font-size: 25px;
+  width: 60%;
+  text-align: center;
+  z-index: 1;
+}
+
+.FormComponentsContainer {
+  display: flex;
+  gap: 3rem;
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 3rem;
+  background: linear-gradient(145deg, #ffffff, #f6f8ff);
+  border-radius: 20px;
+  box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.1),
+      0 1px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.FormComponentsContainer:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+      0 15px 35px rgba(0, 0, 0, 0.12),
+      0 5px 15px rgba(0, 0, 0, 0.06);
+}
+
+/* Sol ve sağ bölümler */
+.form-left, .form-right {
+  flex: 1;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.form-left:hover, .form-right:hover {
+  transform: translateY(-3px);
+}
+
+/* Başlık stilleri */
+h2 {
+  color: #2c3e50;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.8rem;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, #4A90E2, #357ABD);
+  transition: width 0.3s ease;
+}
+
+h2:hover::after {
+  width: 100px;
+}
+
+/* Input container stilleri */
+.coolinput {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.coolinput .text {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+.coolinput .input {
+  width: 90%;
+  padding: 14px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+}
+
+.coolinput .input:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.15);
+  outline: none;
+}
+
+.coolinput .input:hover {
+  border-color: #4A90E2;
+}
+
+/* Select input özelleştirmesi */
+select.input {
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, #4A90E2 50%),
+                    linear-gradient(135deg, #4A90E2 50%, transparent 50%);
+  background-position: 
+      calc(100% - 20px) calc(1em + 2px),
+      calc(100% - 15px) calc(1em + 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* Checkbox grupları */
+.checkbox-left {
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.form-yaka, .form-okul {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+
+/* Spor bölümleri */
+.formVoleyball {
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.formVoleyball:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-details-sports {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.2rem;
+}
+
+/* Checkbox stilleri */
+.checkbox__label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.checkbox__label:hover {
+  background: rgba(74, 144, 226, 0.05);
+  border-radius: 8px;
+}
+
+.checkbox__container {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.checkbox__container input[type="checkbox"],
+.checkbox__container input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #4A90E2;
+  transition: all 0.2s ease;
+}
+
+.checkbox__container input[type="checkbox"]:checked,
+.checkbox__container input[type="radio"]:checked {
+  transform: scale(1.1);
+}
+
+.checkbox__label--text {
+  color: #2c3e50;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.checkbox__label:hover .checkbox__label--text {
+  color: #4A90E2;
+}
+
+/* Gönder butonu */
+.form-button {
+  width: 100%;
+  padding: 1.2rem;
+  margin-top: 2.5rem;
+  background: linear-gradient(45deg, #4A90E2, #357ABD);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+}
+
+.form-button:hover {
+  background: linear-gradient(45deg, #357ABD, #2868A5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+}
+
+.form-button:active {
+  transform: translateY(1px);
+}
+
+/* Loading animation for button */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.form-button:focus {
+  animation: pulse 1.5s infinite;
+}
+
+/* Responsive tasarım */
+@media (max-width: 1200px) {
+  .FormComponentsContainer {
+      margin: 1rem;
+      padding: 2rem;
+  }
+
+  .form-banner{
+    width: 100%;
+    height: 12rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+}
+.form-banner h4{
+  color: #ffffff;
+  font-size: 25px;
+  width: 60%;
+  text-align: center;
+}
+}
+
+@media (max-width: 968px) {
+  .FormComponentsContainer {
+      flex-direction: column;
+  }
+
+  .form-left, .form-right {
+      width: 100%;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .FormComponentsContainer {
+      padding: 1rem;
+      margin: 0.5rem;
+  }
+
+  .form-left, .form-right {
+      padding: 0.8rem;
+  }
+
+  /* Checkbox container düzenlemesi */
+  .checkbox__container {
+      gap: 0.5rem;
+  }
+
+  .checkbox__label {
+      padding: 0.4rem;
+  }
+
+  .checkbox__label--text {
+      font-size: 0.9rem;
+  }
+
+  /* Form button düzenlemesi */
+  .form-button {
+      padding: 1rem;
+      font-size: 1rem;
+      margin-top: 1.5rem;
+  }
+
+  /* Label text düzenlemesi */
+  .coolinput .text {
+      font-size: 0.9rem;
+  }
+}
+
+/* iPhone SE gibi çok küçük ekranlar için */
+@media (max-width: 375px) {
+  .FormComponentsContainer {
+      padding: 0.8rem;
+      margin: 0.3rem;
+  }
+
+  .form-left, .form-right {
+      padding: 0.6rem;
+  }
+
+  h2 {
+      font-size: 1.1rem;
+  }
+
+  .checkbox__label--text {
+      font-size: 0.85rem;
+  }
+
+  .coolinput {
+      margin-bottom: 1.5rem;
+  }
+}
+
+/* Input focus animasyonu */
+@keyframes inputFocus {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.coolinput .input:focus {
+  animation: inputFocus 0.3s ease-out;
+}
+
+/* Hover efektleri */
+.form-details-sports label {
+  position: relative;
+  overflow: hidden;
+}
+
+.form-details-sports label::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(74, 144, 226, 0.1),
+      transparent
+  );
+  transition: 0.5s;
+}
+
+.form-details-sports label:hover::before {
+  left: 100%;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4A90E2;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #357ABD;
+}

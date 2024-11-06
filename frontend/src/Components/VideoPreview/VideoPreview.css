@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
+.video-container{
+    margin-top: 60px;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-position: center;
+    background-size: contain;
+}
+.video-container img{
+  width: 100%;
+  height: auto;
+  background: url('./video.jpg');
+}
+  
+@media (max-width: 768px) {
+    .video-container{
+      padding: 45px 0 0 0;
+      margin: 0;
+    }
+    .video-container a{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .video-container img{
+      width: 90%;
+      height: 170px;
+      background: url('./video.jpg');
+      margin: 0 auto;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .video-container{
+      margin: 0;
+    }
+    .video-container a{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .video-container img{
+      width: 85%;
+      height: 150px;
+      background: url('./video.jpg');
+      margin: 0 auto;
+    }
+  }

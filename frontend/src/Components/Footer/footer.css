@@ -1,0 +1,28 @@
+.footer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: #E84049;
+    padding: 50px 0;
+    margin-top: 100px;
+}
+.footer img{
+    width: 9%;
+}
+.footer p{
+    color: aliceblue;
+}
+
+@media (max-width: 768px) {
+    .footer{
+        flex-direction: column;
+    }
+    .footer img{
+        margin: 30px 0;
+        width: 20%;
+    }
+    .footer p{
+        font-size: 15px;
+    }
+}

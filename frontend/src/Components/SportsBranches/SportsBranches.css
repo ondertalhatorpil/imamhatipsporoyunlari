@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
+.sports-branches {
+    display: flex;
+    background-color: #E84049;
+    padding: 50px;
+    color: white;
+    margin-bottom: 40px;
+  }
+  
+  .branches-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    flex-grow: 1;
+    padding-top: 35px;
+  }
+  
+  .branch-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .branch-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .branch-icon img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  
+  .branch-item h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  
+  .branches-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-left: 30px;
+    width: 15%;
+    padding-right: 40px;
+
+  }
+  
+  .branches-sidebar h3 {
+    font-family: "Mulish";
+    font-weight: 900;
+    font-style: italic;
+    font-size: 32px;
+    line-height: 1.2;
+    margin: 0;
+  }
+  
+  .navigation-dots {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    margin: 10px 0;
+    cursor: pointer;
+  }
+  
+  .dot.active {
+    background-color: white;
+  }
+  
+  @media (max-width: 1024px) {
+    .branches-grid {
+      padding-top: 0px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .branches-sidebar{
+      padding-right: 60px;
+    }
+
+  }
+  
+  @media (max-width: 768px) {
+    .sports-branches {
+      flex-direction: column;
+    }
+  
+    .branches-grid {
+      padding-top: 0px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .branches-sidebar {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 0;
+      margin-top: 20px;
+      padding-left: 20px;
+    }
+  
+    .navigation-dots {
+      margin-left: 20px;
+      flex-direction: row;
+    }
+  
+    .dot {
+      margin: 0 4px;
+    }
+  }

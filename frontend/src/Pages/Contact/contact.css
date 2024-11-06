@@ -1,0 +1,113 @@
+
+.contact-container{
+    width: 100%;
+    height: 48rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.contact-form{
+    width: 30%;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 40px 40px 40px;
+    border-radius: 10px;
+}
+.contact-form .contact-desc{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.a-div{
+    width: 60%;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-direction: column;
+}
+.contact-form a{
+    font-weight: 500;
+    margin-bottom: 25px;
+    font-size: 17px;
+    text-decoration: none;
+    color: rgb(158, 158, 158);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.contact-form a .form-icons{
+    font-size: 27px;
+    margin-right: 10px;
+    color: rgb(212, 212, 212);
+}
+.contact-form a:hover .form-icons {
+    color: #d63a42;
+}
+
+.yataylogocontact{
+  width: 50%;
+}
+
+
+
+
+
+
+/* Google Maps */
+
+.office-map-container {
+    width: 100%;
+    background-color: #ffffff;
+    position: absolute;
+    z-index: -1;
+  }
+  
+  .map-content {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .map-frame {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .map-frame iframe {
+    display: block;
+  }
+  
+  @media (min-width: 768px) {
+    
+    .map-content {
+      flex-direction: row;
+    }
+  
+    .map-info {
+      flex: 0 0 300px;
+    }
+  
+    .map-frame {
+      flex: 1;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .contact-form{
+      width: 70%;
+  }
+
+  .contact-container{
+    height: 30rem;
+    z-index: -1;
+  }
+  }

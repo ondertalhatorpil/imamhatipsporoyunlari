@@ -1,0 +1,164 @@
+.mobile-menu {
+    font-family: Arial, sans-serif;
+    z-index: 9999;
+  }
+  
+  .nav {
+    background-color: #e84049;
+    padding: .4rem;
+  }
+  
+  .nav-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 30%;
+    position: relative;
+  }
+  .logo img{
+    top: -33px;
+    left: 80%;
+    width: 60%;
+    position: absolute;
+  }
+  
+  .menu-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  
+  .overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .menu {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: #2d3748;
+    transition: right 0.3s;
+    overflow-y: auto;
+    z-index: 9999;
+  }
+  
+  .menu.open {
+    right: 0;
+  }
+  
+  .menu-content {
+    padding: 2rem 1rem;
+  }
+  
+  .menu-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .menu-item {
+    margin-bottom: 1rem;
+  }
+  
+  .menu-link {
+    color: #ffffff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+  }
+  
+  .menu-link:hover {
+    background-color: #081938;
+  }
+  
+  .menu-link svg {
+    margin-right: 0.75rem;
+  }
+  
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #4a5568;
+  }
+  
+  .social-link {
+    color: #ffffff;
+    margin: 0 0.5rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+  }
+  
+  .social-link:hover {
+    background-color: #4a5568;
+  }
+
+  @media screen and (max-width: 900px) {
+
+    .logo {
+      width: 40%;
+      position: relative;
+    }
+    .logo img{
+      top: -33px;
+      left: 60%;
+      width: 60%;
+      position: absolute;
+    }
+
+}
+
+@media screen and (max-width: 530px) {
+
+  .logo {
+    width: 50%;
+    position: relative;
+  }
+  .logo img{
+    top: -33px;
+    left: 45%;
+    width: 60%;
+    position: absolute;
+  }
+
+}
+
+
+@media screen and (max-width: 385px) {
+
+  .logo {
+    width: 60%;
+    position: relative;
+  }
+  .logo img{
+    top: -33px;
+    left: 40%;
+    width: 60%;
+    position: absolute;
+  }
+
+}
