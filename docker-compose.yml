@@ -100,8 +100,8 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - frontend-prod
-      - backend-prod
+      - frontend
+      - backend
     networks:
       - oncu-network
 networks:
