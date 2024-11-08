@@ -50,6 +50,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 1453Abdullah*
       MYSQL_DATABASE: oncu
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "healthcheck.sh",
+          "--su-mysql",
+          "--connect",
+          "--innodb_initialized",
+        ]
       start_period: 30s
       interval: 20s
       timeout: 5m
