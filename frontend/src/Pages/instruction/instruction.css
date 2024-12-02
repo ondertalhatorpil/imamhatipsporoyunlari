@@ -1,88 +1,182 @@
-.download-container {
-    min-height: 30vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 180px 20px 25px 20px;
-    background-color: #f5f5f5;
-    font-family: Arial, sans-serif;
-    margin: 0;
+.instructions-container {
+  min-height: calc(100vh - 200px);
+  padding: 120px 24px 60px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-family: 'Segoe UI', -apple-system, sans-serif;
+}
+
+.instructions-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.instructions-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 16px;
+  position: relative;
+  display: inline-block;
+}
+
+.instructions-header h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background-color: #E84049;
+  border-radius: 2px;
+}
+
+.instructions-header p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.instructions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.instruction-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.instruction-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #E84049;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.instruction-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+
+.instruction-card:hover::before {
+  transform: scaleX(1);
+}
+
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  display: inline-block;
+  padding: 20px;
+  background: rgba(232, 64, 73, 0.1);
+  border-radius: 50%;
+}
+
+.instruction-card h2 {
+  color: #333;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.download-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #E84049;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.download-button:hover {
+  background-color: #d63031;
+  transform: translateY(-2px);
+}
+
+.download-button .download-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.download-button:hover .download-icon {
+  animation: bounce 0.5s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
   }
-  
-  .download-card {
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
+  50% {
+    transform: translateY(-3px);
   }
-  
-  .download-card h1 {
-    color: #333;
-    font-size: 24px;
-    margin-bottom: 25px;
-    font-weight: bold;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+  .instructions-container {
+    padding: 100px 16px 40px;
   }
-  
+
+  .instructions-header h1 {
+    font-size: 2rem;
+  }
+
+  .instructions-header p {
+    font-size: 1rem;
+    padding: 0 20px;
+  }
+
+  .instructions-grid {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .instructions-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .instruction-card {
+    padding: 24px;
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    padding: 15px;
+  }
+
   .download-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-    transition: background-color 0.2s ease;
+    padding: 10px 20px;
+    font-size: 0.9rem;
   }
-  
-  .download-button:hover {
-    background-color: #1d4ed8;
+}
+
+/* Tablet için özel düzenleme */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .instructions-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .download-button:hover .download-icon {
-    animation: bounce 0.5s infinite;
-  }
-  
-  .download-icon {
-    width: 20px;
-    height: 20px;
-    transition: transform 0.2s ease;
-  }
-  
-  .download-note {
-    margin-top: 20px;
-    color: #666;
-    font-size: 14px;
-  }
-  
-  @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-3px);
-    }
-  }
-  
-  /* Responsive tasarım için */
-  @media (max-width: 480px) {
-    .download-card {
-      padding: 20px;
-    }
-  
-    .download-card h1 {
-      font-size: 20px;
-    }
-  
-    .download-button {
-      font-size: 14px;
-      padding: 10px 20px;
-    }
-  }
+}

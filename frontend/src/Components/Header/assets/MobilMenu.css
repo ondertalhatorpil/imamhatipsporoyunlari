@@ -18,11 +18,13 @@
     width: 30%;
     position: relative;
   }
+ 
   .logo img{
     top: -33px;
     left: 80%;
     width: 60%;
     position: absolute;
+    z-index: 999;
   }
   
   .menu-button {
