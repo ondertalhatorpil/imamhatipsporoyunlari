@@ -69,6 +69,16 @@ const GalleryPage = () => {
             <ResponsiveHeader />
             <div className="gallery-container">
                 <h1>Fotoğraf Galerisi</h1>
+                <div className="archive-link-container">
+      <a 
+        href="https://drive.google.com/drive/folders/13u3KOYN7elfUP0Dpqd04aMCwxJ10J5Rc?usp=drive_link" 
+        target="_blank"
+        rel="noopener noreferrer" 
+        className="archive-button"
+      >
+        15. İmam Hatip Spor Oyunları Fotoğraf Arşivi için tıklayınız
+      </a>
+    </div>
 
                 {years.length > 0 ? (
                     <>
