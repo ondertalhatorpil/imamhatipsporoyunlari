@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 //Pages
 import Home from './Pages/HomePage/Home'
-import Fixture from './Pages/Fikstür/Fixture'
+import DerecePage from './Pages/Derece/Derece'
 import Contact from './Pages/Contact/Contact'
 import Form from './Pages/Form/Form'
 import Galeri from './Pages/Galeri/Galeri'
@@ -20,7 +20,7 @@ const Router = () => {
         <BrowserRouter>
             <Routes>
                 <Route path='/' element={<Home />} />
-                <Route path='/fikstür' element={<Fixture />} />
+                <Route path='/spor-dali-birincileri' element={<DerecePage />} />
                 <Route path='/contact' element={<Contact />} />
                 <Route path='/form' element={<Form />} />
                 <Route path='/galeri' element={<Galeri />} />

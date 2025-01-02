@@ -12,16 +12,16 @@ const InstructionPage = () => {
       icon: '🏆'
     },
     {
-      title: 'Atletizm',
-      filename: 'ATLETİZM.pdf',
-      downloadName: 'ATLETİZM.pdf',
-      icon: '🏃'
+      title: 'Dart',
+      filename: 'dart.pdf',
+      downloadName: 'Dart Talimatmane.pdf',
+      icon: '🎯'
     },
     {
       title: 'Geleneksel Türk Okçuluğu',
       filename: 'GelenekselTürkOkçuluğu.pdf',
       downloadName: 'GelenekselTürkOkçuluğu.pdf',
-      icon: '🎯'
+      icon: '🏹'
     },
     {
       title: 'Masa Tenisi',

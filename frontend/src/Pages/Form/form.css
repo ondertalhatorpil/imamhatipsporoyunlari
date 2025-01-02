@@ -96,7 +96,7 @@ h2 {
   padding-bottom: 0.8rem;
 }
 
-h2::after {
+/* h2::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -105,7 +105,7 @@ h2::after {
   height: 3px;
   background: linear-gradient(90deg, #4A90E2, #357ABD);
   transition: width 0.3s ease;
-}
+} */
 
 h2:hover::after {
   width: 100px;

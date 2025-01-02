@@ -28,7 +28,7 @@ const WebHeader = () => {
 
     const navLinks = [
         { name: 'Anasayfa', path: '/' },
-        { name: 'Fikstür', path: '/fikstür' },
+        { name: 'Dereceye Girenler', path: '/spor-dali-birincileri' },
         { name: 'Talimatname', path: '/talimatname' },
         { name: 'Galeri', path: '/galeri' },
         { name: 'İletişim', path: '/contact' },

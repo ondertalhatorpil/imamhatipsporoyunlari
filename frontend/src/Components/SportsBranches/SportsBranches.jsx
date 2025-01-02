@@ -51,16 +51,6 @@ const SportsBranches = () => {
         </div>
       </div>
     </section>
-    <div className="archive-link-container">
-      <a 
-        href="https://drive.google.com/drive/folders/13u3KOYN7elfUP0Dpqd04aMCwxJ10J5Rc?usp=drive_link" 
-        target="_blank"
-        rel="noopener noreferrer" 
-        className="archive-button"
-      >
-        15. İmam Hatip Spor Oyunları Fotoğraf Arşivi için tıklayınız
-      </a>
-    </div>
    </>
   );
 };

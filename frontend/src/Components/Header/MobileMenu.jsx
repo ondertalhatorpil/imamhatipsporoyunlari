@@ -4,13 +4,14 @@ import {
   Menu,
   X,
   Home,
-  Calendar,
   Mail,
   FileText,
   UserPlus,
   Instagram,
+  Trophy,
   Twitter,
   Facebook,
+  
   Youtube,
   Wallpaper
 } from 'lucide-react';
@@ -27,6 +28,11 @@ const MobileMenu = () => {
       icon: <Home size={20} />,
       text: 'Anasayfa',
       to: '/'
+    },
+    {
+      icon: <Trophy  size={20} />,
+      text: 'Dereceye Girenler',
+      to: '/spor-dali-birincileri'
     },
     {
       icon: <FileText size={20} />,
