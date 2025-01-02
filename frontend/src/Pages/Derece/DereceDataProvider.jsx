@@ -69,7 +69,7 @@ const processSheetData = (sheetName, data) => {
 
 export const useWinnersData = () => {
   const [winners, setWinners] = useState([]);
-  const [selectedSport, setSelectedSport] = useState('all');
+  const [selectedSport, setSelectedSport] = useState('archery');
 
   useEffect(() => {
     const loadExcelData = async () => {
