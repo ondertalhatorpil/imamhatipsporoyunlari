@@ -30,15 +30,20 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      # ports:
-      #   - "3000:3000"
+      target: ${NODE_ENV:-development}  # Development veya production hedefini seçer
+    volumes:
+      - ./frontend:/app  # Hot reload için kaynak kodları container'a bağla
+      - /app/node_modules  # Node modules'u hariç tut
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV:-development}
       - REACT_APP_API_URL=https://imamhatipsporoyunlari.com
+      - WATCHPACK_POLLING=true  # Windows'da dosya izleme için gerekli
+      - CHOKIDAR_USEPOLLING=true  # Docker'da dosya izleme için gerekli
+    ports:
+      - ${PORT:-3000}:3000  # Development için 3000 portu
+      - 8140:80  # Production için 80 portu
     depends_on:
       - backend
-    ports:
-      - 8140:80
     networks:
       - oncu-wlan
     restart: unless-stopped

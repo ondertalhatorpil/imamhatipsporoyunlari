@@ -27,7 +27,7 @@ const WebHeader = () => {
     }, []);
 
     const navLinks = [
-        { name: 'Anasayfa', path: '/' },
+        // { name: 'Anasayfa', path: '/' },
         { name: 'Dereceye Girenler', path: '/spor-dali-birincileri' },
         { name: 'Talimatname', path: '/talimatname' },
         { name: 'Galeri', path: '/galeri' },
@@ -66,7 +66,7 @@ const WebHeader = () => {
                         ))}
                     </ul>
                     <div className='header-right'> 
-                    <button className='formButton'><Link to="/form" >Kayıt Ol</Link></button>
+                    <button className='formButton'><Link to="/" >Kayıt Ol</Link></button>
                        <div className='icons-header'>
                         <FaInstagramSquare className='icon-header' />
                         <FaSquareXTwitter className='icon-header' />

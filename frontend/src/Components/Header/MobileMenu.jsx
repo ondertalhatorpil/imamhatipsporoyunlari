@@ -47,7 +47,7 @@ const MobileMenu = () => {
     {
       icon: <UserPlus size={20} />,
       text: 'Kayıt Ol',
-      to: '/form'
+      to: '/'
     },
     {
       icon: <Mail size={20} />,
