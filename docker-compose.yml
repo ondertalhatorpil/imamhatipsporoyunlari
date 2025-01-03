@@ -4,8 +4,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-      # ports:
-      #   - "8082:8082"
+    # ports:
+    #   - "8082:8082"
     depends_on:
       db:
         condition: service_healthy
@@ -30,20 +30,15 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      target: ${NODE_ENV:-development} 
-    volumes:
-      - ./frontend:/app  
-      - /app/node_modules  
+    # ports:
+    #   - "3000:3000"
     environment:
-      - NODE_ENV=${NODE_ENV:-development}
+      - NODE_ENV=production
       - REACT_APP_API_URL=https://imamhatipsporoyunlari.com
-      - WATCHPACK_POLLING=true 
-      - CHOKIDAR_USEPOLLING=true  
-    ports:
-      - ${PORT:-3000}:3000  
-      - 8140:80  
     depends_on:
       - backend
+    ports:
+      - 8140:80
     networks:
       - oncu-wlan
     restart: unless-stopped
@@ -63,51 +58,53 @@ services:
           "healthcheck.sh",
           "--su-mysql",
           "--connect",
-          "--innodb_initialized",
+          "--innodb_initialized"
         ]
       start_period: 30s
       interval: 20s
       timeout: 5m
       retries: 100
-      # ports:
-      #   - "3306:3306"
+    # ports:
+    #   - "3306:3306"
     networks:
       - oncu-wlan
     volumes:
       - db:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  #  phpmyadmin:
-  #    container_name: oncu_phpmyadmin
-  #    image: phpmyadmin/phpmyadmin
-  #    ports:
-  #      - "8053:80"
-  #    environment:
-  #      PMA_HOST: mysql
-  #      PMA_USER: root
-  #      PMA_PASSWORD: 1453Abdullah*
-  #    depends_on:
-  #      - db
-  #  networks:
-  #    - oncu-wlan
-  #  restart: unless-stopped
+  # phpmyadmin:
+  #   container_name: oncu_phpmyadmin
+  #   image: phpmyadmin/phpmyadmin
+  #   ports:
+  #     - "8053:80"
+  #   environment:
+  #     PMA_HOST: mysql
+  #     PMA_USER: root
+  #     PMA_PASSWORD: 1453Abdullah*
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - oncu-wlan
+  #   restart: unless-stopped
 
-  #nginx:
-  #  container_name: oncu_nginx
-  #  image: nginx:latest
-  #  ports:
-  #    - "8140:80"
-  #  volumes:
-  #    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #  depends_on:
-  #    - frontend
-  #    - backend
-  #  networks:
-  #    - oncu-wlan
+  # nginx:
+  #   container_name: oncu_nginx
+  #   image: nginx:latest
+  #   ports:
+  #     - "8140:80"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - frontend
+  #     - backend
+  #   networks:
+  #     - oncu-wlan
+
 networks:
   oncu-wlan:
     name: oncu-wlan
     driver: bridge
+
 volumes:
   backend:
   frontend:
