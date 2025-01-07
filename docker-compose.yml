@@ -64,8 +64,8 @@ services:
       interval: 20s
       timeout: 5m
       retries: 100
-    ports:
-      - "8054:80"
+    # ports:
+    #  - "8054:80"
     networks:
       - oncu-wlan
     volumes:
