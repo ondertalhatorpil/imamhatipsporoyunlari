@@ -72,25 +72,26 @@ services:
       - db:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  phpmyadmin:
-    container_name: oncu_phpmyadmin
-    image: phpmyadmin/phpmyadmin
-    ports:
-        - "8054:80"
-    environment:
-        - PMA_ARBITRARY=1
-        - PMA_HOST=mysqldb
-        - PMA_PORT=3306
-        - PMA_USER=root
-        - PMA_PASSWORD=1453Abdullah*
-        - UPLOAD_LIMIT=300M
-        - MEMORY_LIMIT=512M
-        - MAX_EXECUTION_TIME=300
-    depends_on:
-        - db
-    networks:
-        - oncu-wlan
-    restart: unless-stopped
+phpmyadmin:
+  container_name: oncu_phpmyadmin
+  image: phpmyadmin/phpmyadmin
+  ports:
+      - "8054:80"
+  environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysqldb
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=1453Abdullah*
+      - UPLOAD_LIMIT=300M
+      - MEMORY_LIMIT=512M
+      - MAX_EXECUTION_TIME=300
+  depends_on:
+      - mysqldb
+  networks:
+      - oncu-wlan
+  restart: unless-stopped
+
 
 networks:
   oncu-wlan:
