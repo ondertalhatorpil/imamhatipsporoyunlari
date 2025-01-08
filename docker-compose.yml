@@ -4,11 +4,6 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    # ports:
-    #   - "8082:8082"
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
       - NODE_ENV=production
       - DB_HOST=mysqldb
@@ -24,14 +19,15 @@ services:
     networks:
       - oncu-wlan
     restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
     container_name: oncu_frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    # ports:
-    #   - "3000:3000"
     environment:
       - NODE_ENV=production
       - REACT_APP_API_URL=https://imamhatipsporoyunlari.com
@@ -45,40 +41,29 @@ services:
 
   db:
     container_name: mysqldb
-    image: mariadb
-    command: --default-authentication-plugin=mysql_native_password
+    image: mariadb:latest
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 1453Abdullah*
       MYSQL_DATABASE: oncu
     healthcheck:
-      test:
-        [
-          "CMD",
-          "healthcheck.sh",
-          "--su-mysql",
-          "--connect",
-          "--innodb_initialized"
-        ]
-      start_period: 30s
-      interval: 20s
-      timeout: 5m
-      retries: 100
-    # ports:
-    #  - "8054:80"
+      test: "/usr/bin/mysql --user=root --password=1453Abdullah* --execute \"SHOW DATABASES;\""
+      interval: 10s
+      timeout: 20s
+      retries: 10
+      start_period: 40s
     networks:
       - oncu-wlan
     volumes:
       - db:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-phpmyadmin:
-  container_name: oncu_phpmyadmin
-  image: phpmyadmin/phpmyadmin
-  ports:
-      - "8054:80"
-  environment:
-      - PMA_ARBITRARY=1
+  phpmyadmin:
+    container_name: oncu_phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8054:80
+    environment:
       - PMA_HOST=mysqldb
       - PMA_PORT=3306
       - PMA_USER=root
@@ -86,12 +71,11 @@ phpmyadmin:
       - UPLOAD_LIMIT=300M
       - MEMORY_LIMIT=512M
       - MAX_EXECUTION_TIME=300
-  depends_on:
-      - mysqldb
-  networks:
+    depends_on:
+      - db
+    networks:
       - oncu-wlan
-  restart: unless-stopped
-
+    restart: unless-stopped
 
 networks:
   oncu-wlan:
@@ -100,5 +84,4 @@ networks:
 
 volumes:
   backend:
-  frontend:
   db:

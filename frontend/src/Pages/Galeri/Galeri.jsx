@@ -7,7 +7,6 @@ import Footer from '../../Components/Footer/Footer';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-
 const GalleryPage = () => {
     const [selectedYear, setSelectedYear] = useState(null);
     const [years, setYears] = useState([]);
@@ -56,6 +55,46 @@ const GalleryPage = () => {
         }
     };
 
+    const handleDownload = async (photo) => {
+        try {
+            // Önce veritabanındaki sayacı artır
+            await axios.post(`${API_URL}/api/gallery/increment-download/${photo.id}`);
+            
+            // Dosyayı fetch ile al
+            const response = await fetch(`${API_URL}${photo.photo_path}`);
+            const blob = await response.blob();
+            
+            // Blob URL oluştur
+            const blobUrl = window.URL.createObjectURL(blob);
+            
+            // İndirme linkini oluştur
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            
+            // Dosya adını photo_path'den al
+            const fileName = photo.photo_path.split('/').pop();
+            link.download = fileName;
+            
+            // Linki tıkla ve temizle
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Blob URL'i temizle
+            window.URL.revokeObjectURL(blobUrl);
+            
+            // Fotoğrafları yenile (indirme sayısının güncellenmesi için)
+            if (selectedYear) {
+                await fetchPhotos(selectedYear);
+            }
+            
+            toast.success('Dosya indirme başladı');
+        } catch (error) {
+            console.error('İndirme hatası:', error);
+            toast.error('Dosya indirilirken bir hata oluştu');
+        }
+    };
+
     if (loading) {
         return (
             <div className="loading-container">
@@ -70,15 +109,15 @@ const GalleryPage = () => {
             <div className="gallery-container">
                 <h1>Fotoğraf Galerisi</h1>
                 <div className="archive-link-container">
-      <a 
-        href="https://drive.google.com/drive/folders/13u3KOYN7elfUP0Dpqd04aMCwxJ10J5Rc?usp=drive_link" 
-        target="_blank"
-        rel="noopener noreferrer" 
-        className="archive-button"
-      >
-        15. İmam Hatip Spor Oyunları Fotoğraf Arşivi için tıklayınız
-      </a>
-    </div>
+                    <a
+                        href="https://drive.google.com/drive/folders/13u3KOYN7elfUP0Dpqd04aMCwxJ10J5Rc?usp=drive_link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="archive-button"
+                    >
+                        15. İmam Hatip Spor Oyunları Fotoğraf Arşivi için tıklayınız
+                    </a>
+                </div>
 
                 {years.length > 0 ? (
                     <>
@@ -87,9 +126,7 @@ const GalleryPage = () => {
                                 <button
                                     key={year}
                                     onClick={() => setSelectedYear(year)}
-                                    className={`year-button ${
-                                        selectedYear === year ? 'active' : ''
-                                    }`}
+                                    className={`year-button ${selectedYear === year ? 'active' : ''}`}
                                 >
                                     {year}
                                 </button>
@@ -101,17 +138,27 @@ const GalleryPage = () => {
                                 {photos.map((photo, index) => (
                                     <div key={photo.id} className="photo-item">
                                         <div className="photo-wrapper">
-                                        <img
-                                        src={`${API_URL}${photo.photo_path}`} // URL düzeltildi
-                                        alt={`Fotoğraf ${index + 1} - ${selectedYear}`}
-                                        loading="lazy"
-                                    />
+                                            <img
+                                                src={`${API_URL}${photo.photo_path}`}
+                                                alt={`Fotoğraf ${index + 1} - ${selectedYear}`}
+                                                loading="lazy"
+                                            />
                                         </div>
                                         <div className="photo-overlay">
                                             <p>
-                                                {photo.description ||
-                                                    `${selectedYear} - Fotoğraf ${index + 1}`}
+                                                {photo.description || `${selectedYear} - Fotoğraf ${index + 1}`}
                                             </p>
+                                            <div className="download-section">
+                                                <button
+                                                    className="download-button"
+                                                    onClick={() => handleDownload(photo)}
+                                                >
+                                                    İndir
+                                                </button>
+                                                <span className="download-count">
+                                                    {photo.download_count || 0} kez indirildi
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}

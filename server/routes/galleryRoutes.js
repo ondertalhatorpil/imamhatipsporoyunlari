@@ -1,4 +1,3 @@
-// routes/galleryRoutes.js
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
@@ -71,8 +70,6 @@ module.exports = (connection) => {
 
     // Yeni yıl ekle
     router.post('/gallery/years', async (req, res) => {
-        console.log('Gelen veri:', req.body); // Debug için
-
         const { year } = req.body;
 
         if (!year || isNaN(year) || year < 2000 || year > 2100) {
@@ -93,12 +90,6 @@ module.exports = (connection) => {
             });
         } catch (error) {
             console.error('Veritabanı hatası:', error);
-            if (error.code === 'ER_DUP_ENTRY') {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Bu yıl zaten mevcut'
-                });
-            }
             res.status(500).json({
                 success: false,
                 message: 'Yıl eklenirken bir hata oluştu'
@@ -109,7 +100,6 @@ module.exports = (connection) => {
     // Fotoğrafları getir
     router.get('/gallery/photos/:year', async (req, res) => {
         const { year } = req.params;
-
         try {
             const [photos] = await connection.promise().query(
                 'SELECT * FROM gallery_photos WHERE year = ? ORDER BY created_at DESC',
@@ -121,6 +111,40 @@ module.exports = (connection) => {
             res.status(500).json({
                 success: false,
                 message: 'Fotoğraflar getirilirken bir hata oluştu'
+            });
+        }
+    });
+
+    // Download count artırma endpoint'i
+    router.post('/gallery/increment-download/:id', async (req, res) => {
+        const { id } = req.params;
+        console.log('İndirme sayacı artırma isteği:', id);
+        
+        try {
+            // Increment download count
+            await connection.promise().query(
+                'UPDATE gallery_photos SET download_count = download_count + 1 WHERE id = ?',
+                [id]
+            );
+
+            // Get updated count
+            const [photo] = await connection.promise().query(
+                'SELECT download_count FROM gallery_photos WHERE id = ?',
+                [id]
+            );
+
+            console.log('İndirme sayacı güncellendi. Yeni değer:', photo[0]?.download_count);
+            
+            res.json({
+                success: true,
+                message: 'Download count updated successfully',
+                download_count: photo[0]?.download_count || 0
+            });
+        } catch (error) {
+            console.error('Download count güncelleme hatası:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Download count güncellenirken bir hata oluştu'
             });
         }
     });
@@ -160,7 +184,6 @@ module.exports = (connection) => {
     // Fotoğraf sil
     router.delete('/gallery/photos/:id', async (req, res) => {
         const { id } = req.params;
-
         try {
             const [photos] = await connection.promise().query(
                 'SELECT photo_path FROM gallery_photos WHERE id = ?',
@@ -174,13 +197,11 @@ module.exports = (connection) => {
                 });
             }
 
-            // Veritabanından sil
             await connection.promise().query(
                 'DELETE FROM gallery_photos WHERE id = ?',
                 [id]
             );
 
-            // Dosyayı sistemden sil
             const filePath = path.join(__dirname, '..', photos[0].photo_path);
             await fs.unlink(filePath).catch(console.error);
 
