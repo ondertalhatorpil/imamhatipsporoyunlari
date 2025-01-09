@@ -115,39 +115,56 @@ module.exports = (connection) => {
         }
     });
 
-    // Download count artırma endpoint'i
-    router.post('/gallery/increment-download/:id', async (req, res) => {
-        const { id } = req.params;
-        console.log('İndirme sayacı artırma isteği:', id);
-        
-        try {
-            // Increment download count
-            await connection.promise().query(
-                'UPDATE gallery_photos SET download_count = download_count + 1 WHERE id = ?',
-                [id]
-            );
 
-            // Get updated count
-            const [photo] = await connection.promise().query(
-                'SELECT download_count FROM gallery_photos WHERE id = ?',
-                [id]
-            );
 
-            console.log('İndirme sayacı güncellendi. Yeni değer:', photo[0]?.download_count);
-            
-            res.json({
-                success: true,
-                message: 'Download count updated successfully',
-                download_count: photo[0]?.download_count || 0
-            });
-        } catch (error) {
-            console.error('Download count güncelleme hatası:', error);
-            res.status(500).json({
+    // galleryRoutes.js
+router.post('/gallery/increment-download/:id', async (req, res) => {
+    const { id } = req.params;
+    console.log('İndirme sayacı isteği alındı:', id);
+    
+    try {
+        // Önce fotoğrafın var olup olmadığını kontrol et
+        const [photo] = await connection.promise().query(
+            'SELECT * FROM gallery_photos WHERE id = ?',
+            [id]
+        );
+
+        if (photo.length === 0) {
+            console.log('Fotoğraf bulunamadı:', id);
+            return res.status(404).json({
                 success: false,
-                message: 'Download count güncellenirken bir hata oluştu'
+                message: 'Fotoğraf bulunamadı'
             });
         }
-    });
+
+        // İndirme sayısını artır
+        await connection.promise().query(
+            'UPDATE gallery_photos SET download_count = COALESCE(download_count, 0) + 1 WHERE id = ?',
+            [id]
+        );
+
+        // Güncellenmiş sayıyı al
+        const [updatedPhoto] = await connection.promise().query(
+            'SELECT download_count FROM gallery_photos WHERE id = ?',
+            [id]
+        );
+
+        console.log('İndirme sayacı güncellendi:', updatedPhoto[0]);
+        
+        res.json({
+            success: true,
+            message: 'İndirme sayısı güncellendi',
+            download_count: updatedPhoto[0].download_count
+        });
+    } catch (error) {
+        console.error('İndirme sayısı güncelleme hatası:', error);
+        res.status(500).json({
+            success: false,
+            message: 'İndirme sayısı güncellenirken bir hata oluştu'
+        });
+    }
+});
+
 
     // Fotoğraf yükle
     router.post('/gallery/upload', upload.single('photo'), async (req, res) => {

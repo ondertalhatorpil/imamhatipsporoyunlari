@@ -55,45 +55,61 @@ const GalleryPage = () => {
         }
     };
 
+   
+
     const handleDownload = async (photo) => {
         try {
-            // Önce veritabanındaki sayacı artır
-            await axios.post(`${API_URL}/api/gallery/increment-download/${photo.id}`);
+            console.log('İndirme başlatılıyor:', photo.id);
             
-            // Dosyayı fetch ile al
-            const response = await fetch(`${API_URL}${photo.photo_path}`);
-            const blob = await response.blob();
-            
-            // Blob URL oluştur
-            const blobUrl = window.URL.createObjectURL(blob);
-            
-            // İndirme linkini oluştur
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            
-            // Dosya adını photo_path'den al
-            const fileName = photo.photo_path.split('/').pop();
-            link.download = fileName;
-            
-            // Linki tıkla ve temizle
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Blob URL'i temizle
-            window.URL.revokeObjectURL(blobUrl);
-            
-            // Fotoğrafları yenile (indirme sayısının güncellenmesi için)
-            if (selectedYear) {
-                await fetchPhotos(selectedYear);
+            // Fotoğraf URL'ini oluştur
+            const imageUrl = `${API_URL}${photo.photo_path}`;
+            console.log('İndirilecek resim URL:', imageUrl);
+    
+            // Önce resmi indirmeyi dene
+            const imageResponse = await fetch(imageUrl);
+            if (!imageResponse.ok) {
+                throw new Error('Resim indirilemedi');
             }
             
+            const blob = await imageResponse.blob();
+            
+            // İndirme işlemi başarılıysa sayacı artır
+            try {
+                const incrementUrl = `${API_URL}/api/gallery/increment-download/${photo.id}`;
+                console.log('Sayaç güncelleme URL:', incrementUrl);
+                await axios.post(incrementUrl);
+            } catch (error) {
+                console.error('Sayaç güncelleme hatası:', error);
+                // Sayaç hatası olsa bile indirmeye devam et
+            }
+    
+            // Dosya adını ayarla ve indirme işlemini başlat
+            const fileName = photo.photo_path.split('/').pop();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = fileName || 'photo.jpg';
+            
+            // İndirme işlemini gerçekleştir
+            document.body.appendChild(link);
+            link.click();
+            
+            // Temizlik
+            setTimeout(() => {
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(downloadUrl);
+            }, 100);
+    
             toast.success('Dosya indirme başladı');
+            
+            // Fotoğrafları yenile
+            await fetchPhotos(selectedYear);
         } catch (error) {
             console.error('İndirme hatası:', error);
-            toast.error('Dosya indirilirken bir hata oluştu');
+            toast.error(`İndirme hatası: ${error.message}`);
         }
     };
+
 
     if (loading) {
         return (
