@@ -1,4 +1,31 @@
 services:
+  db:
+    container_name: mysqldb
+    image: mariadb
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1453Abdullah*
+      MYSQL_DATABASE: oncu
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1453Abdullah*"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - oncu-wlan
+    volumes:
+      - db:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   backend:
     container_name: oncu_backend
     build:
@@ -13,12 +40,9 @@ services:
       - DB_USER=root
       - DB_PASSWORD=1453Abdullah*
       - DB_NAME=oncu
+      - DB_PORT=3306
       - PORT=8082
       - CORS_ORIGIN=https://imamhatipsporoyunlari.com
-      - UPLOAD_DIR=uploads
-      - CHOKIDAR_USEPOLLING=false
-    volumes:
-      - backend:/app
     networks:
       - oncu-wlan
     restart: unless-stopped
@@ -28,6 +52,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    volumes:
+      - backend:/app
     logging:
       driver: "json-file"
       options:
@@ -55,31 +81,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  db:
-    container_name: mysqldb
-    image: mariadb
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: 1453Abdullah*
-      MYSQL_DATABASE: oncu
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1453Abdullah*"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    networks:
-      - oncu-wlan
-    volumes:
-      - db:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     logging:
       driver: "json-file"
       options:
