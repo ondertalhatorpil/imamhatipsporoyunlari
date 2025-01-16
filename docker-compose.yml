@@ -70,18 +70,11 @@ services:
       MYSQL_ROOT_PASSWORD: 1453Abdullah*
       MYSQL_DATABASE: oncu
     healthcheck:
-      test:
-        [
-          "CMD",
-          "healthcheck.sh",
-          "--su-mysql",
-          "--connect",
-          "--innodb_initialized"
-        ]
-      start_period: 30s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1453Abdullah*"]
       interval: 20s
-      timeout: 5m
-      retries: 100
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - oncu-wlan
     volumes:
