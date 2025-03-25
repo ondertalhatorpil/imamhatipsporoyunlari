@@ -2,7 +2,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mysql = require('mysql2');
+const db = require('./config/database'); 
 
 const app = express();
 
@@ -19,49 +19,11 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-// Veritabanı bağlantısı
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT || 3306
-});
-
-db.connect((err) => {
-    if (err) {
-        console.error("Veri Tabanına Bağlanırken Hata Oluştu", err);
-        console.error("Bağlantı detayları:", {
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            database: process.env.DB_NAME,
-            port: process.env.DB_PORT || 3306
-        });
-        process.exit(1);
-    }
-    console.log("Veritabanına Başarıyla Bağlanıldı.");
-});
-
-// Bağlantı kopma durumunda yeniden bağlanma denemesi
-db.on('error', (err) => {
-    console.error('MySQL bağlantı hatası:', err);
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-        handleDisconnect();
-    } else {
-        throw err;
-    }
-});
-
 // Health check endpoint
 app.get('/health', async (req, res) => {
     try {
-        db.query('SELECT 1', (err, result) => {
-            if (err) {
-                res.status(500).json({ status: 'unhealthy', error: err.message });
-            } else {
-                res.status(200).json({ status: 'healthy' });
-            }
-        });
+        await db.executeQuery('SELECT 1');
+        res.status(200).json({ status: 'healthy' });
     } catch (error) {
         res.status(500).json({ status: 'unhealthy', error: error.message });
     }
@@ -98,16 +60,8 @@ process.on('SIGTERM', () => {
     console.log('Closing HTTP server.');
     server.close(() => {
         console.log('HTTP server closed.');
-        // Veritabanı bağlantısını kapat
-        db.end((err) => {
-            if (err) {
-                console.error('Error closing database connection:', err);
-                process.exit(1);
-            } else {
-                console.log('Database connection closed.');
-                process.exit(0);
-            }
-        });
+        // Veritabanı bağlantısı, havuz otomatik olarak kapatılacak
+        process.exit(0);
     });
 });
 
@@ -140,17 +94,5 @@ process.on('uncaughtException', (error) => {
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
-
-// Bağlantı kopma durumunda yeniden bağlanma fonksiyonu
-function handleDisconnect() {
-    db.connect((err) => {
-        if (err) {
-            console.error('Veritabanına yeniden bağlanma hatası:', err);
-            setTimeout(handleDisconnect, 2000);
-        } else {
-            console.log('Veritabanına yeniden bağlanıldı.');
-        }
-    });
-}
 
 module.exports = app;
