@@ -33,6 +33,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+  
   frontend:
     container_name: oncu_frontend
     build:
@@ -59,6 +60,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+  
   db:
     container_name: mysqldb
     image: mariadb
@@ -91,10 +93,12 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
 networks:
   oncu-wlan:
     name: oncu-wlan
     driver: bridge
+
 volumes:
   backend:
   frontend:
