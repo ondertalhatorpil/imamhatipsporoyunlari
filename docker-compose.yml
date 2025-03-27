@@ -33,7 +33,6 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-
   frontend:
     container_name: oncu_frontend
     build:
@@ -60,11 +59,10 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-
   db:
     container_name: mysqldb
     image: mariadb
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --wait_timeout=600 --interactive_timeout=600 --net_read_timeout=300 --net_write_timeout=300 --max_allowed_packet=128M
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 1453Abdullah*
@@ -87,17 +85,16 @@ services:
     volumes:
       - db:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-
 networks:
   oncu-wlan:
     name: oncu-wlan
     driver: bridge
-
 volumes:
   backend:
   frontend:
