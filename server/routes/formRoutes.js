@@ -1,25 +1,25 @@
 const express = require('express');
 const router = express.Router();
 
-module.exports = (connection) => {
-    router.get('/registrations', (req, res) => {
-        const query = 'SELECT * FROM school_sports_registrations ORDER BY created_at DESC';
-        
-        connection.query(query, (error, results) => {
-            if (error) {
-                return res.status(500).json({ 
-                    success: false, 
-                    message: 'Veriler çekilirken hata oluştu',
-                    error: error.message 
-                });
-            }
+module.exports = (db) => {
+    // Tüm kayıtları getir
+    router.get('/registrations', async (req, res) => {
+        try {
+            const query = 'SELECT * FROM school_sports_registrations ORDER BY created_at DESC';
+            const results = await db.executeQuery(query);
             res.json(results);
-        });
+        } catch (error) {
+            console.error('Kayıtları getirme hatası:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Veriler çekilirken hata oluştu',
+                error: error.message 
+            });
+        }
     });
 
-    // 2. Yeni Kayıt Ekleme Endpoint'i
+    // Yeni Kayıt Ekleme
     router.post('/submit-form', async (req, res) => {
-        // Form verilerini al
         const {
             school_name,
             school_district,
@@ -93,180 +93,202 @@ module.exports = (connection) => {
                 ...sportFields
             };
 
-            // Veritabanına kaydet
-            connection.query(
-                'INSERT INTO school_sports_registrations SET ?',
-                formData,
-                (error, results) => {
-                    if (error) {
-                        console.error('Kayıt hatası:', error);
-                        res.status(500).json({
-                            success: false,
-                            message: 'Kayıt sırasında bir hata oluştu',
-                            error: error.message
-                        });
-                        return;
-                    }
+            // Veritabanına kaydet - Promise tabanlı sorgu kullan
+            const query = 'INSERT INTO school_sports_registrations SET ?';
+            const results = await db.executeQuery(query, [formData]);
 
-                    res.status(201).json({
-                        success: true,
-                        message: 'Form başarıyla kaydedildi',
-                        id: results.insertId
-                    });
-                }
-            );
-
+            res.status(201).json({
+                success: true,
+                message: 'Form başarıyla kaydedildi',
+                id: results.insertId
+            });
         } catch (error) {
-            console.error('Sunucu hatası:', error);
+            console.error('Form kayıt hatası:', error);
             res.status(500).json({
                 success: false,
-                message: 'Sunucu hatası oluştu',
+                message: 'Kayıt sırasında bir hata oluştu',
                 error: error.message
             });
         }
     });
 
-  // 3. İlçeye Göre Filtreleme Endpoint'i
-  router.get('/registrations/by-district/:district', (req, res) => {
-    const { district } = req.params;
-    
-    const query = `
-        SELECT * FROM school_sports_registrations 
-        WHERE school_district = ? 
-        ORDER BY created_at DESC
-    `;
+    // İlçeye Göre Filtreleme
+    router.get('/registrations/by-district/:district', async (req, res) => {
+        try {
+            const { district } = req.params;
+            
+            const query = `
+                SELECT * FROM school_sports_registrations 
+                WHERE school_district = ? 
+                ORDER BY created_at DESC
+            `;
 
-    connection.query(query, [district], (error, results) => {
-        if (error) {
-            return res.status(500).json({ 
+            const results = await db.executeQuery(query, [district]);
+            res.json(results);
+        } catch (error) {
+            console.error('İlçe filtreleme hatası:', error);
+            res.status(500).json({ 
                 success: false, 
-                message: 'Veriler çekilirken hata oluştu' 
+                message: 'Veriler çekilirken hata oluştu',
+                error: error.message
             });
         }
-        res.json(results);
-    });
-});
-
-
-      // 4. Bölgeye Göre Filtreleme Endpoint'i
-      router.get('/registrations/by-region/:region', (req, res) => {
-        const { region } = req.params;
-        
-        const query = `
-            SELECT * FROM school_sports_registrations 
-            WHERE region = ? 
-            ORDER BY created_at DESC
-        `;
-
-        connection.query(query, [region], (error, results) => {
-            if (error) {
-                return res.status(500).json({ 
-                    success: false, 
-                    message: 'Veriler çekilirken hata oluştu' 
-                });
-            }
-            res.json(results);
-        });
     });
 
+    // Bölgeye Göre Filtreleme (tekrarlanan endpoint düzeltildi)
+    router.get('/registrations/by-region/:region', async (req, res) => {
+        try {
+            const { region } = req.params;
+            
+            const query = `
+                SELECT * FROM school_sports_registrations 
+                WHERE region = ? 
+                ORDER BY created_at DESC
+            `;
 
-    // Bölgeye göre kayıtları getir
-    router.get('/registrations/by-region/:region', (req, res) => {
-        const { region } = req.params;
-        
-        const query = `
-            SELECT *
-            FROM school_sports_registrations
-            WHERE region = ?
-            ORDER BY created_at DESC
-        `;
-
-        connection.query(query, [region], (error, results) => {
-            if (error) {
-                console.error('Veri çekme hatası:', error);
-                res.status(500).json({ 
-                    success: false, 
-                    message: 'Veriler çekilirken bir hata oluştu',
-                    error: error.message 
-                });
-                return;
-            }
-
+            const results = await db.executeQuery(query, [region]);
             res.json(results);
-        });
+        } catch (error) {
+            console.error('Bölge filtreleme hatası:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Veriler çekilirken hata oluştu',
+                error: error.message
+            });
+        }
     });
 
     // Branşa göre kayıtları getir
-    router.get('/registrations/by-sport/:sport', (req, res) => {
-        const { sport } = req.params;
-        
-        const query = `
-            SELECT *
-            FROM school_sports_registrations
-            WHERE ${sport} = true
-            ORDER BY created_at DESC
-        `;
-
-        connection.query(query, (error, results) => {
-            if (error) {
-                console.error('Veri çekme hatası:', error);
-                res.status(500).json({ 
-                    success: false, 
-                    message: 'Veriler çekilirken bir hata oluştu',
-                    error: error.message 
+    router.get('/registrations/by-sport/:sport', async (req, res) => {
+        try {
+            const { sport } = req.params;
+            
+            // SQL enjeksiyonuna karşı koruma
+            const validSportColumns = [
+                'voleybol_yildiz_kiz', 'voleybol_genc_kiz',
+                'basketbol_genc_kiz', 'basketbol_genc_erkek',
+                'futsal_genc_erkek', 'futsal_yildiz_erkek',
+                'gures_genc_erkek', 'gures_yildiz_erkek',
+                'bilek_guresi_genc_erkek', 'bilek_guresi_yildiz_erkek',
+                'okculuk_genc_kiz', 'okculuk_genc_erkek', 'okculuk_yildiz_erkek', 'okculuk_yildiz_kiz',
+                'atletizm_kucuk_erkek', 'atletizm_genc_erkek', 'atletizm_yildiz_erkek',
+                'masa_tenisi_genc_kiz', 'masa_tenisi_genc_erkek', 'masa_tenisi_yildiz_erkek', 'masa_tenisi_yildiz_kiz',
+                'dart_genc_kiz', 'dart_genc_erkek', 'dart_yildiz_erkek', 'dart_yildiz_kiz',
+                'taekwondo_genc_kiz', 'taekwondo_genc_erkek', 'taekwondo_yildiz_erkek', 'taekwondo_yildiz_kiz',
+                'badminton_genc_kiz', 'badminton_genc_erkek', 'badminton_yildiz_erkek', 'badminton_yildiz_kiz'
+            ];
+            
+            if (!validSportColumns.includes(sport)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Geçersiz branş parametresi'
                 });
-                return;
             }
+            
+            const query = `
+                SELECT *
+                FROM school_sports_registrations
+                WHERE ${sport} = true
+                ORDER BY created_at DESC
+            `;
 
+            const results = await db.executeQuery(query);
             res.json(results);
-        });
+        } catch (error) {
+            console.error('Branş filtreleme hatası:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Veriler çekilirken bir hata oluştu',
+                error: error.message 
+            });
+        }
     });
 
-      // 5. İstatistikleri Getiren Endpoint
-    router.get('/statistics', (req, res) => {
-        const query = `
-            SELECT 
-                COUNT(DISTINCT school_name) as total_schools,
-                COUNT(*) as total_registrations,
-                COUNT(DISTINCT region) as active_regions,
-                COUNT(DISTINCT school_district) as total_districts,
-                SUM(CASE WHEN school_type = 'Lise' THEN 1 ELSE 0 END) as high_schools,
-                SUM(CASE WHEN school_type = 'Orta Okul' THEN 1 ELSE 0 END) as middle_schools
-            FROM school_sports_registrations
-        `;
+    // İstatistikleri Getir
+    router.get('/statistics', async (req, res) => {
+        try {
+            const query = `
+                SELECT 
+                    COUNT(DISTINCT school_name) as total_schools,
+                    COUNT(*) as total_registrations,
+                    COUNT(DISTINCT region) as active_regions,
+                    COUNT(DISTINCT school_district) as total_districts,
+                    SUM(CASE WHEN school_type = 'Lise' THEN 1 ELSE 0 END) as high_schools,
+                    SUM(CASE WHEN school_type = 'Orta Okul' THEN 1 ELSE 0 END) as middle_schools
+                FROM school_sports_registrations
+            `;
 
-        connection.query(query, (error, results) => {
-            if (error) {
-                return res.status(500).json({ 
-                    success: false, 
-                    message: 'İstatistikler çekilirken hata oluştu' 
-                });
-            }
+            const results = await db.executeQuery(query);
             res.json(results[0]);
-        });
+        } catch (error) {
+            console.error('İstatistik hatası:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'İstatistikler çekilirken hata oluştu',
+                error: error.message
+            });
+        }
     });
 
-    router.get('/search', (req, res) => {
-        const { term } = req.query;
-        const searchTerm = `%${term}%`;
-        
-        const query = `
-            SELECT * FROM school_sports_registrations 
-            WHERE school_name LIKE ? 
-            OR teacher_name LIKE ? 
-            OR school_district LIKE ? 
-            ORDER BY created_at DESC
-        `;
-
-        connection.query(query, [searchTerm, searchTerm, searchTerm], (error, results) => {
-            if (error) {
-                return res.status(500).json({ 
-                    success: false, 
-                    message: 'Arama yapılırken hata oluştu' 
+    // Arama Yapma
+    router.get('/search', async (req, res) => {
+        try {
+            const { term } = req.query;
+            
+            if (!term || term.length < 2) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Arama terimi en az 2 karakter olmalıdır'
                 });
             }
+            
+            const searchTerm = `%${term}%`;
+            
+            const query = `
+                SELECT * FROM school_sports_registrations 
+                WHERE school_name LIKE ? 
+                OR teacher_name LIKE ? 
+                OR school_district LIKE ? 
+                ORDER BY created_at DESC
+                LIMIT 100
+            `;
+
+            const results = await db.executeQuery(query, [searchTerm, searchTerm, searchTerm]);
             res.json(results);
-        });
+        } catch (error) {
+            console.error('Arama hatası:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Arama yapılırken hata oluştu',
+                error: error.message
+            });
+        }
+    });
+
+    // Tekil kayıt getirme
+    router.get('/registration/:id', async (req, res) => {
+        try {
+            const { id } = req.params;
+            
+            const query = 'SELECT * FROM school_sports_registrations WHERE id = ?';
+            const results = await db.executeQuery(query, [id]);
+            
+            if (results.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Kayıt bulunamadı'
+                });
+            }
+            
+            res.json(results[0]);
+        } catch (error) {
+            console.error('Kayıt getirme hatası:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Kayıt getirilirken hata oluştu',
+                error: error.message
+            });
+        }
     });
 
     return router;
