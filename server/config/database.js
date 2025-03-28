@@ -1,6 +1,7 @@
 require('dotenv').config();
 const mysql = require('mysql2');
 
+// Bağlantı havuzu yapılandırması
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -8,19 +9,17 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME,
     port: 3306,
     waitForConnections: true,
-    connectionLimit: 20,
+    connectionLimit: 10,         // Daha düşük bağlantı limiti
     queueLimit: 0,
     enableKeepAlive: true,
-    keepAliveInitialDelay: 10000,    // 10 saniyede bir keepalive
-    connectTimeout: 30000,           // 30 saniye bağlantı timeout
-    acquireTimeout: 30000,           // 30 saniye edinme timeout
-    timeout: 30000,                  // 30 saniye genel timeout
-    idleTimeout: 60000,              // Boşta kalan bağlantılar 60 saniye sonra kapatılır
-    maxIdle: 10,                     // Maksimum 10 boşta bağlantı tut
-    namedPlaceholders: true
+    keepAliveInitialDelay: 10000, // 10 saniyede bir keepalive
+    connectTimeout: 60000,        // 60 saniye bağlantı zaman aşımı
+    acquireTimeout: 60000,        // 60 saniye edinme zaman aşımı
+    timeout: 60000,               // 60 saniye genel zaman aşımı
+    namedPlaceholders: true      
 });
 
-// Promise wrapper'ı kullanın
+// Promise wrapper'ı
 const promisePool = pool.promise();
 
 // Bağlantı havuzu hata yönetimi
@@ -31,24 +30,21 @@ pool.on('error', async (err) => {
         console.error('Veritabanı bağlantısı kapatıldı. Yeniden bağlanmaya çalışılacak.');
         // Yeniden bağlantı için bekle
         await new Promise(resolve => setTimeout(resolve, 2000));
-        await testConnection();
     }
     
     if (err.code === 'ER_CON_COUNT_ERROR') {
         console.error('Veritabanında çok fazla bağlantı var.');
-        // Bağlantı sayısını azaltmak için havuzu temizle
+        // Havuzu zorla yenile
         try {
-            await promisePool.query('SELECT 1'); // Basit sorgu ile havuzu test et
+            await promisePool.query('SELECT 1');
         } catch (error) {
-            console.error('Havuz temizleme başarısız:', error);
+            console.error('Havuz yenileme hatası:', error);
         }
     }
     
     if (err.code === 'ECONNREFUSED') {
         console.error('Veritabanı bağlantısı reddedildi.');
-        // Yeniden bağlantı için bekle
         await new Promise(resolve => setTimeout(resolve, 5000));
-        await testConnection();
     }
 });
 
@@ -61,36 +57,32 @@ async function testConnection() {
     } catch (error) {
         console.error('Veritabanı bağlantı testi başarısız:', error);
         
-        // Kritik hata durumlarında uygulamanın yeniden başlaması için işaret
+        // Kritik hata durumları
         if (error.code === 'PROTOCOL_CONNECTION_LOST' || 
             error.code === 'ECONNREFUSED' ||
             error.message.includes('closed state')) {
-            console.error('Kritik veritabanı hatası, bağlantı havuzu yenileniyor');
+            console.error('Kritik veritabanı hatası. Yeniden bağlanmaya çalışılacak.');
             
-            try {
-                // Kısa bir bekleme süresi
-                await new Promise(resolve => setTimeout(resolve, 5000));
-                return false;
-            } catch (reconnectError) {
-                console.error('Yeniden bağlantı başarısız:', reconnectError);
-                return false;
-            }
+            // Kısa bekleme süresi
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            return false;
         }
         return false;
     }
 }
 
-// Sorgu yürütme yardımcı fonksiyonu - Yeniden deneme mekanizması eklendi
+// Sorgu yürütme fonksiyonu - Otomatik yeniden deneme mekanizması
 async function executeQuery(sql, params = [], maxRetries = 3) {
     let retries = 0;
     
     while (retries <= maxRetries) {
         let connection;
         try {
+            // Bağlantı havuzundan bir bağlantı al
             connection = await promisePool.getConnection();
             
             try {
-                // Bağlantı canlı mı kontrol et
+                // Bağlantı kapalı mı kontrol et (ping)
                 await connection.query('SELECT 1');
                 
                 // Ana sorguyu çalıştır
@@ -101,7 +93,7 @@ async function executeQuery(sql, params = [], maxRetries = 3) {
                 
                 return results;
             } finally {
-                // Bağlantıyı her durumda havuza geri ver
+                // Her durumda bağlantıyı serbest bırak
                 if (connection) {
                     try {
                         connection.release();
@@ -111,7 +103,7 @@ async function executeQuery(sql, params = [], maxRetries = 3) {
                 }
             }
         } catch (error) {
-            console.error(`Sorgu yürütme hatası (deneme ${retries+1}/${maxRetries+1}):`, error);
+            console.error(`Sorgu hatası (deneme ${retries+1}/${maxRetries+1}):`, error);
             
             // Belirli hatalar için yeniden deneme
             if ((error.message && error.message.includes('closed state') || 
@@ -121,31 +113,28 @@ async function executeQuery(sql, params = [], maxRetries = 3) {
                 retries < maxRetries) {
                 
                 retries++;
-                const waitTime = Math.min(1000 * Math.pow(2, retries), 30000); // max 30 saniye
+                const waitTime = Math.min(1000 * Math.pow(2, retries), 10000); // max 10 saniye
                 console.log(`Yeniden sorgu denemesi ${retries}/${maxRetries} - ${waitTime}ms bekleniyor`);
                 
-                // Exponential backoff with jitter
-                await new Promise(resolve => 
-                    setTimeout(resolve, waitTime * (0.75 + Math.random() * 0.5)));
-                
+                // Artan bekleme süresi
+                await new Promise(resolve => setTimeout(resolve, waitTime));
                 continue;
             }
             
-            // Yeniden denemeler sonrası başarısız olursa hata fırlat
+            // Başarısız yeniden denemeler sonrası hata fırlat
             throw error;
         }
     }
 }
 
-// Daha seyrek bağlantı testi yap
+// Bağlantı testi - 60 saniyede bir
 setInterval(async () => {
     await testConnection();
-}, 60000); // 60 saniyede bir test
+}, 60000);
 
-// Belirli aralıklarla havuzu temizle
+// Bağlantı havuzu periyodik temizliği - saatte bir
 setInterval(async () => {
     try {
-        // Havuzu yenilemek için bağlantıları zorla kapat (çok sık kullanmayın)
         console.log("Bağlantı havuzu periyodik temizliği başlatılıyor...");
         await promisePool.query("/* ping */ SELECT 1");
         console.log("Bağlantı havuzu periyodik temizliği tamamlandı");
@@ -154,12 +143,12 @@ setInterval(async () => {
     }
 }, 3600000); // Her saat başı
 
-// Modül ihracı
+// Modül dışa aktarımı
 module.exports = {
     pool: promisePool,
     executeQuery,
     testConnection,
-    // Havuzu tamamen kapatmak için fonksiyon ekle
+    // Havuzu kapatma fonksiyonu
     closePool: async () => {
         try {
             await promisePool.end();
